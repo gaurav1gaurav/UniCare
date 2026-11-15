@@ -20,7 +20,6 @@ static int readNumber(string message)
 const int MAX_REQUEST_QTY = 2;
 
 
-// requests.txt : number,studentName,medicineId,medicineName,quantity
 MedicineInventory::MedicineInventory()
 {
     count = 0;
