@@ -1,0 +1,3 @@
+1,DL-01-AMB-101,Ramesh Kumar,Available,Campus Base,1.8
+2,DL-01-AMB-102,Suresh Singh,Available,Campus Base,0.6
+3,DL-01-AMB-103,Vikram Rathore,Available,Campus Base,1.2

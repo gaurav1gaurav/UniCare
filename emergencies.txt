@@ -1,0 +1,5 @@
+503,Rahul Verma,Hostel 3,Severe chest pain,1,Patient Transported to Clinic,Ambulance #1 (DL-01-AMB-101),Recorded
+504,Ananya Sen,Library,Fainted,1,Patient Transported to Clinic,Ambulance #1 (DL-01-AMB-101),Recorded
+505,luk,lib,critical,1,Pending,None,Recorded
+502,Ankit Verma,Sports Complex,Deep cut and bleeding,2,Pending,None,Recorded
+501,Rohan Sharma,Hostel Block B,High fever and dizziness,3,Pending,None,Recorded
