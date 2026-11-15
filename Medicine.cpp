@@ -19,7 +19,7 @@ static int readNumber(string message)
 
 const int MAX_REQUEST_QTY = 2;
 
-// medicines.txt : id,name,quantity,price
+
 // requests.txt : number,studentName,medicineId,medicineName,quantity
 MedicineInventory::MedicineInventory()
 {
