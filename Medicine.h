@@ -34,11 +34,9 @@ class MedicineInventory
 public:
     MedicineInventory();
 
-    // Student
     void view(bool isAdmin);
     void requestMedicine(string studentName = "");
 
-    // Admin only
     void addMedicine();
     void restockMedicine();
     void viewRequests();
