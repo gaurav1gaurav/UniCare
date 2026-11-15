@@ -1,0 +1,12 @@
+Floor 1 - Washroom A
+Floor 1 - Washroom B
+Floor 2 - Washroom A
+Floor 2 - Washroom B
+Floor 3 - Washroom A
+Floor 3 - Washroom B
+Floor 4 - Washroom A
+Floor 4 - Washroom B
+Floor 5 - Washroom A
+Floor 5 - Washroom B
+Floor 6 - Washroom A
+Floor 6 - Washroom B
