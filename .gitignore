@@ -66,3 +66,20 @@ vcpkg_installed/
 # test output & cache
 Testing/
 .cache/
+
+# CLion / IDE settings
+cmake-build-debug/
+.idea/
+.vscode/
+
+# macOS
+.DS_Store
+
+# Compiled program on Mac/Linux
+/UniCare
+
+# Local data (test records)
+students.txt
+appointment.txt
+requests.txt
+pad_requests.txt
