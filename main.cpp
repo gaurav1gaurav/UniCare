@@ -22,7 +22,7 @@ using namespace std;
 
 namespace HospitalMapModule {
 #define main mapMain
-#include "modules/map.c"
+#include "map.c"
 #undef main
 #undef MAX_NODES
 #undef INF
@@ -31,17 +31,17 @@ namespace HospitalMapModule {
 
 namespace PadDispatchModule {
 #define main padDispatchMain
-#include "modules/pad dispatch.cpp"
+#include "pad dispatch.cpp"
 #undef main
 }
 
 namespace Member1Module {
-#include "modules/student_1/others.h"
-#include "modules/student_1/student.h"
-#include "modules/student_1/doctor.h"
-#include "modules/student_1/student.cpp"
-#include "modules/student_1/doctor.cpp"
-#include "modules/student_1/others.cpp"
+#include "others.h"
+#include "student.h"
+#include "doctor.h"
+#include "student.cpp"
+#include "doctor.cpp"
+#include "others.cpp"
 
 Student* authenticateStudentSession() {
     char roll[ID_LEN], pass[NAME_LEN];
