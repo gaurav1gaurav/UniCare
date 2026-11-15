@@ -1,0 +1,4 @@
+101,Paracetamol,50,10
+102,Cetirizine,30,5
+103,ORS,20,20
+104,gh,2,45
