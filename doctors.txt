@@ -1,0 +1,6 @@
+D01,Arun Sharma,General Physician,9000000001,Mon-Sat 9-5
+D02,Vikram Verma,Dentist,9000000002,Mon-Sat 10-4
+D03,Neha Gupta,Counsellor,9000000003,Mon-Fri 10-5
+D04,Anita Rawat,General Physician,9000000004,Mon-Sat 9-5
+D05,Rajesh Negi,Psychiatrist,9000000005,Mon-Fri 11-4
+D06,Meera Joshi,Career Counsellor,9000000006,Tue-Thu 10-3
