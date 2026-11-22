@@ -1,6 +1,6 @@
 #include "em.h"
 
-static string trimSpaces(string s) {
+static string trimSpaces(const string& s) {
     int start = 0;
     while (start < (int)s.length() &&
            (s[start] == ' ' || s[start] == '\t' || s[start] == '\r' || s[start] == '\n')) {
@@ -26,8 +26,24 @@ static string toLowerStr(string s) {
     return s;
 }
 
-static bool hasComma(string s) {
+static bool hasComma(const string& s) {
     return s.find(',') != string::npos;
+}
+
+static bool isValidField(const string& s) {
+    return !s.empty() && !hasComma(s);
+}
+
+static bool isDigitsOnly(const string& s) {
+    if (s.empty()) {
+        return false;
+    }
+    for (int i = 0; i < (int)s.length(); i++) {
+        if (s[i] < '0' || s[i] > '9') {
+            return false;
+        }
+    }
+    return true;
 }
 
 string findRegisteredStudentName(string input) {
@@ -58,7 +74,7 @@ string findRegisteredStudentName(string input) {
     return "";
 }
 
-static string readText(string prompt) {
+static string readText(const string& prompt) {
     string s;
     cout << prompt;
     if (!getline(cin, s)) {
@@ -67,22 +83,15 @@ static string readText(string prompt) {
     return trimSpaces(s);
 }
 
-static int readNumber(string prompt) {
+static int readNumber(const string& prompt) {
     string s = readText(prompt);
-    if (s.empty()) {
+    if (!isDigitsOnly(s)) {
         return -1;
-    }
-    for (int i = 0; i < (int)s.length(); i++) {
-        if (s[i] < '0' || s[i] > '9') {
-            return -1;
-        }
     }
     return atoi(s.c_str());
 }
 
-
-
-static double readDouble(string prompt) {
+static double readDouble(const string& prompt) {
     string s = readText(prompt);
     if (s.empty()) {
         return -1.0;
@@ -200,12 +209,12 @@ string EmergencyRequest::getSeverityName() {
 }
 
 void EmergencyRequest::display() {
-    cout << " [#" << requestId << "] [" << getSeverityName() << "]"
-         << " | Student: " << studentName
-         << " | Loc: " << location
-         << " | Issue: " << description
-         << " | Status: " << status
-         << " (" << assignedAmbulance << ")"
+    cout << " [#" << getId() << "] [" << getSeverityName() << "]"
+         << " | Student: " << getStudentName()
+         << " | Loc: " << getLocation()
+         << " | Issue: " << getDescription()
+         << " | Status: " << getStatus()
+         << " (" << getAssignedAmbulance() << ")"
          << " | Time: " << getTimestamp() << endl;
 }
 
@@ -249,7 +258,7 @@ void Ambulance::setDistanceKm(double distKm) {
 }
 
 string Ambulance::getAssignedLabel() {
-    return "Ambulance #" + intToText(vehicleId) + " (" + vehicleNumber + ")";
+    return "Ambulance #" + intToText(getId()) + " (" + getNumber() + ")";
 }
 
 bool Ambulance::isAvailable() {
@@ -267,11 +276,11 @@ void Ambulance::returnToBase() {
 }
 
 void Ambulance::display() {
-    cout << " [Amb #" << vehicleId << "] " << vehicleNumber
-         << " | Driver: " << driverName
-         << " | Dist: " << distanceKm << " km"
-         << " | Status: " << status
-         << " | Location: " << currentDestination << endl;
+    cout << " [Amb #" << getId() << "] " << getNumber()
+         << " | Driver: " << getDriverName()
+         << " | Dist: " << getDistanceKm() << " km"
+         << " | Status: " << getStatus()
+         << " | Location: " << getDestination() << endl;
 }
 
 PriorityEmergencyQueue::PriorityEmergencyQueue() {
@@ -443,13 +452,7 @@ void PriorityEmergencyQueue::resolveTop() {
 
     int resolvedId = requests[0]->getId();
     string resolvedStudent = requests[0]->getStudentName();
-    delete requests[0];
-    for (int i = 0; i < count - 1; i++) {
-        requests[i] = requests[i + 1];
-    }
-    requests[count - 1] = NULL;
-    count--;
-    saveToFile();
+    removeById(resolvedId);
 
     cout << "Resolved Emergency #" << resolvedId
          << " for student " << resolvedStudent << ".\n";
@@ -487,13 +490,7 @@ void PriorityEmergencyQueue::displayForStudent(string query, bool exactName) {
         return;
     }
 
-    bool isNumeric = true;
-    for (int i = 0; i < (int)qLower.length(); i++) {
-        if (qLower[i] < '0' || qLower[i] > '9') {
-            isNumeric = false;
-            break;
-        }
-    }
+    bool isNumeric = isDigitsOnly(qLower);
     int searchId = isNumeric ? atoi(qLower.c_str()) : -1;
 
     int matches = 0;
@@ -521,7 +518,7 @@ void PriorityEmergencyQueue::displayForStudent(string query, bool exactName) {
 
 void PriorityEmergencyQueue::displayAll() {
     cout << "\n==========================================================\n";
-    cout << "      PRIORITY EMERGENCY(" << count << " total)\n";
+    cout << "      PRIORITY EMERGENCY(" << getCount() << " total)\n";
     cout << "==========================================================\n";
     if (isEmpty()) {
         cout << " No emergency requests currently recorded.\n";
@@ -538,6 +535,12 @@ AmbulanceFleet::AmbulanceFleet() {
     loadFromFile();
 }
 
+static void swapAmbulances(Ambulance& a, Ambulance& b) {
+    Ambulance temp = a;
+    a = b;
+    b = temp;
+}
+
 int AmbulanceFleet::partition(int low, int high) {
     double pivotDist = fleet[high].getDistanceKm();
     int pivotId = fleet[high].getId();
@@ -547,15 +550,11 @@ int AmbulanceFleet::partition(int low, int high) {
         double dist = fleet[j].getDistanceKm();
         if (dist < pivotDist || (dist == pivotDist && fleet[j].getId() < pivotId)) {
             i++;
-            Ambulance temp = fleet[i];
-            fleet[i] = fleet[j];
-            fleet[j] = temp;
+            swapAmbulances(fleet[i], fleet[j]);
         }
     }
 
-    Ambulance temp = fleet[i + 1];
-    fleet[i + 1] = fleet[high];
-    fleet[high] = temp;
+    swapAmbulances(fleet[i + 1], fleet[high]);
     return i + 1;
 }
 
@@ -739,7 +738,7 @@ void AmbulanceFleet::displayFleet() {
     sortByProximityQuickSort();
     cout << "\n----------------------------------------------------------\n";
     cout << "    CAMPUS AMBULANCE FLEET STATUS (" << getAvailableCount()
-         << "/" << totalAmbulances << " Available, Sorted Nearest First)\n";
+         << "/" << getTotalAmbulances() << " Available, Sorted Nearest First)\n";
     cout << "----------------------------------------------------------\n";
     for (int i = 0; i < totalAmbulances; i++) {
         fleet[i].display();
@@ -774,7 +773,7 @@ void EmergencySystem::reportEmergency(string studentName) {
 
     cout << "\n--- REPORT MEDICAL EMERGENCY ---\n";
     string name = studentName.empty() ? readText("Student Name: ") : studentName;
-    if (name.empty() || hasComma(name)) {
+    if (!isValidField(name)) {
         cout << "Invalid name (cannot be empty or contain ',').\n";
         return;
     }
@@ -789,13 +788,13 @@ void EmergencySystem::reportEmergency(string studentName) {
     }
 
     string loc = readText("Exact Campus Location (e.g. Hostel 3 / Library): ");
-    if (loc.empty() || hasComma(loc)) {
+    if (!isValidField(loc)) {
         cout << "Invalid location (cannot be empty or contain ',').\n";
         return;
     }
 
     string desc = readText("Nature of Emergency (symptoms / injury): ");
-    if (desc.empty() || hasComma(desc)) {
+    if (!isValidField(desc)) {
         cout << "Invalid description (cannot be empty or contain ',').\n";
         return;
     }
@@ -965,13 +964,13 @@ void EmergencySystem::resolveEmergency() {
 void EmergencySystem::addAmbulance() {
     cout << "\n--- ADD CAMPUS AMBULANCE ---\n";
     string plate = readText("Vehicle Number (e.g. DL-01-AMB-104): ");
-    if (plate.empty() || hasComma(plate)) {
+    if (!isValidField(plate)) {
         cout << "Invalid vehicle number (cannot be empty or contain ',').\n";
         return;
     }
 
     string driver = readText("Driver Name: ");
-    if (driver.empty() || hasComma(driver)) {
+    if (!isValidField(driver)) {
         cout << "Invalid driver name (cannot be empty or contain ',').\n";
         return;
     }
