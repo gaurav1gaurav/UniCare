@@ -80,6 +80,8 @@ static int readNumber(string prompt) {
     return atoi(s.c_str());
 }
 
+
+
 static double readDouble(string prompt) {
     string s = readText(prompt);
     if (s.empty()) {
@@ -519,7 +521,7 @@ void PriorityEmergencyQueue::displayForStudent(string query, bool exactName) {
 
 void PriorityEmergencyQueue::displayAll() {
     cout << "\n==========================================================\n";
-    cout << "      PRIORITY EMERGENCY TRIAGE QUEUE (" << count << " total)\n";
+    cout << "      PRIORITY EMERGENCY(" << count << " total)\n";
     cout << "==========================================================\n";
     if (isEmpty()) {
         cout << " No emergency requests currently recorded.\n";
